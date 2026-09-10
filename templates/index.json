@@ -20,7 +20,7 @@
         "text": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR",
         "background_color": "#F5F5F5",
         "text_color": "#000000",
-        "show_on_desktop": true
+        "show_on_desktop": false
       }
     },
     "custom_products_grid": {

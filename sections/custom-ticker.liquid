@@ -54,12 +54,12 @@
     }
   }
 
-  {% unless section.settings.show_on_desktop %}
+  /* Hide on desktop, only display on mobile/smaller screens */
   @media screen and (min-width: 901px) {
-    /* If disabled on desktop, hide */
-    /* .custom-ticker-wrapper { display: none; } */
+    .custom-ticker-wrapper {
+      display: none !important;
+    }
   }
-  {% endunless %}
 </style>
 
 <div class="custom-ticker-wrapper" {{ section.shopify_attributes }}>
@@ -96,7 +96,7 @@
       "type": "checkbox",
       "id": "show_on_desktop",
       "label": "Show on Desktop",
-      "default": true
+      "default": false
     }
   ],
   "presets": [
