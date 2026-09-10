@@ -11,8 +11,17 @@
   "type": "header",
   "name": "t:names.header",
   "sections": {
+    "custom_navbar": {
+      "type": "navbar",
+      "settings": {
+        "text": "Find the ideal gift for your loved ones.",
+        "background_color": "#F5F5F5",
+        "text_color": "#000000"
+      }
+    },
     "header_announcements_9jGBFp": {
       "type": "header-announcements",
+      "disabled": true,
       "blocks": {
         "announcement_BxgCk9": {
           "type": "_announcement",
@@ -42,6 +51,7 @@
     },
     "header_section": {
       "type": "header",
+      "disabled": true,
       "blocks": {
         "header-logo": {
           "type": "_header-logo",
@@ -102,6 +112,7 @@
     }
   },
   "order": [
+    "custom_navbar",
     "header_announcements_9jGBFp",
     "header_section"
   ]

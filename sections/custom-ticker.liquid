@@ -1,0 +1,108 @@
+<style>
+  .custom-ticker-wrapper {
+    width: 100%;
+    background-color: {{ section.settings.background_color | default: '#F5F5F5' }};
+    opacity: 1;
+    box-sizing: border-box;
+  }
+
+  .custom-ticker {
+    width: 100%;
+    max-width: 1440px;
+    height: 34px;
+    min-height: 34px;
+    margin: 0 auto;
+    padding: 10px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    opacity: 1;
+  }
+
+  .custom-ticker__text {
+    margin: 0;
+    padding: 0;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 13.42px;
+    letter-spacing: 0px;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color: {{ section.settings.text_color | default: '#000000' }};
+    white-space: nowrap;
+    opacity: 1;
+  }
+
+  @media screen and (max-width: 900px) {
+    .custom-ticker {
+      max-width: 375px;
+      height: 34px;
+      min-height: 34px;
+      padding: 10px 16px;
+      gap: 375px;
+    }
+
+    .custom-ticker__text {
+      width: 288px;
+      height: 14px;
+      font-size: 14px;
+      line-height: 13.42px;
+    }
+  }
+
+  {% unless section.settings.show_on_desktop %}
+  @media screen and (min-width: 901px) {
+    /* If disabled on desktop, hide */
+    /* .custom-ticker-wrapper { display: none; } */
+  }
+  {% endunless %}
+</style>
+
+<div class="custom-ticker-wrapper" {{ section.shopify_attributes }}>
+  <div class="custom-ticker">
+    <p class="custom-ticker__text">
+      {{ section.settings.text | default: 'SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR' }}
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Ticker Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_desktop",
+      "label": "Show on Desktop",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ticker Banner"
+    }
+  ]
+}
+{% endschema %}

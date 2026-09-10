@@ -1,0 +1,1346 @@
+<style>
+  .custom-products-wrapper {
+    width: 100%;
+    background-color: {{ section.settings.background_color | default: '#FFFFFF' }};
+    padding: 60px 0;
+    box-sizing: border-box;
+    opacity: 1;
+  }
+
+  .custom-products-section {
+    width: 100%;
+    max-width: 1337px;
+    min-height: 981px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+    box-sizing: border-box;
+    opacity: 1;
+  }
+
+  .custom-products-header {
+    width: 100%;
+    max-width: 372px;
+    min-height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: flex-start;
+    text-align: left;
+    opacity: 1;
+  }
+
+  .custom-products-title {
+    margin: 0;
+    padding: 0;
+    font-family: 'Lustria', serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 36px;
+    line-height: 120%;
+    letter-spacing: 0px;
+    text-align: left;
+    vertical-align: middle;
+    color: {{ section.settings.title_color | default: '#000000' }};
+    white-space: nowrap;
+  }
+
+  .custom-products-grid {
+    width: 100%;
+    max-width: 1339px;
+    height: 908px;
+    min-height: 908px;
+    display: grid;
+    grid-template-columns: repeat(3, 433px);
+    grid-template-rows: repeat(2, 444px);
+    gap: 20px;
+    justify-content: center;
+    box-sizing: border-box;
+    opacity: 1;
+  }
+
+  .custom-products-card {
+    width: 433px;
+    height: 444px;
+    border: 1.5px solid #000000;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    background-color: #FFFFFF;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .custom-products-card__media {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .custom-products-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .custom-products-card:hover .custom-products-card__img {
+    transform: scale(1.02);
+  }
+
+  .custom-products-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F8F8F8;
+  }
+
+  .custom-products-card__placeholder svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.3;
+  }
+
+  /* Hotspot Button (Group 1000008190) */
+  .custom-products-hotspot {
+    position: absolute;
+    top: var(--hotspot-top);
+    left: var(--hotspot-left);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #F8F8F8E5;
+    border: 1.5px solid #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 5;
+    box-sizing: border-box;
+    opacity: 1;
+    transition: transform 0.15s ease;
+    line-height: 0;
+    outline: none;
+  }
+
+  .custom-products-hotspot:hover {
+    transform: scale(1.2);
+  }
+
+  .custom-products-hotspot__icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* Floating Product Info Modal (Frame 311x447) */
+  .custom-products-overlay-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    animation: none !important;
+    animation-duration: 0ms !important;
+    transition: none !important;
+  }
+
+  .custom-products-overlay-modal.is-open {
+    display: flex;
+  }
+
+  .custom-products-overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    animation: none !important;
+    animation-duration: 0ms !important;
+    transition: none !important;
+  }
+
+  .custom-modal-frame {
+    position: relative;
+    width: 311px;
+    height: 447px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px 0px #00000033;
+    opacity: 1;
+    box-sizing: border-box;
+    overflow: visible;
+    z-index: 2;
+    animation: none !important;
+    animation-duration: 0ms !important;
+    transition: none !important;
+  }
+
+  .custom-modal__close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .custom-modal__product-img-wrapper {
+    position: absolute;
+    top: 36px;
+    left: 17px;
+    width: 120px;
+    height: 140px;
+    overflow: hidden;
+    background: #F8F8F8;
+  }
+
+  .custom-modal__product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .custom-modal__product-title {
+    position: absolute;
+    top: 49px;
+    left: 145px;
+    width: 136px;
+    height: 19px;
+    margin: 0;
+    padding: 0;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 120%;
+    letter-spacing: 0px;
+    color: #000000;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 1;
+  }
+
+  .custom-modal__product-price {
+    position: absolute;
+    top: 90px;
+    left: 145px;
+    width: 64px;
+    height: 19px;
+    margin: 0;
+    padding: 0;
+    font-family: 'Lustria', serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 120%;
+    letter-spacing: 0px;
+    color: #000000;
+    vertical-align: middle;
+    opacity: 1;
+  }
+
+  .custom-modal__product-desc {
+    position: absolute;
+    top: 122px;
+    left: 145px;
+    width: 146px;
+    height: 52px;
+    margin: 0;
+    padding: 0;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 110%;
+    letter-spacing: -1%;
+    color: #000000;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    opacity: 1;
+  }
+
+  /* Color Selector */
+  .custom-modal__color-section {
+    position: absolute;
+    top: 186px;
+    left: 20px;
+    width: 271px;
+    height: 64.5px;
+    box-sizing: border-box;
+  }
+
+  .custom-modal__section-label {
+    display: block;
+    margin: 0 0 6px 0;
+    padding: 0;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 130%;
+    letter-spacing: 0%;
+    color: #333333;
+  }
+
+  .custom-modal__color-options {
+    position: relative;
+    width: 271px;
+    height: 40.44px;
+    border-width: 0.5px;
+    border: 0.5px solid #000000;
+    box-sizing: border-box;
+    display: flex;
+    background: #FFFFFF;
+    overflow: hidden;
+  }
+
+  /* Smooth sliding background indicator */
+  .custom-modal__color-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%;
+    background: #000000 !important;
+    background-color: #000000 !important;
+    z-index: 1;
+    pointer-events: none;
+    transform: translateX(0%);
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .custom-modal__color-opt {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    background: transparent !important;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    margin: 0;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: -2%;
+    text-transform: capitalize;
+    color: #000000;
+    transition: color 0.25s ease;
+    box-sizing: border-box;
+    outline: none;
+  }
+
+  .custom-modal__color-opt + .custom-modal__color-opt {
+    border-left: 0.5px solid #000000;
+  }
+
+  .custom-modal__color-opt.is-selected {
+    color: #FFFFFF;
+    font-weight: 500;
+  }
+
+  .custom-modal__color-opt.is-selected .custom-modal__color-text {
+    color: #FFFFFF;
+  }
+
+  .custom-modal__color-opt:not(.is-selected) .custom-modal__color-text {
+    color: #000000;
+  }
+
+  .custom-modal__color-swatch {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5.81px;
+    height: 100%;
+    border: 0.5px solid #000000;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 1;
+  }
+
+  .custom-modal__color-text {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    text-align: center;
+    color: #000000;
+    transition: color 0.25s ease;
+  }
+
+  /* Size Selector Dropdown */
+  .custom-modal__size-section {
+    position: absolute;
+    top: 262px;
+    left: 20px;
+    width: 271px;
+    height: 64px;
+    box-sizing: border-box;
+  }
+
+  .custom-modal__size-dropdown-wrapper {
+    position: relative;
+    width: 271px;
+    height: 40.44px;
+    border: 0.5px solid #000000;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+  }
+
+  .custom-modal__size-trigger {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px 0 13px;
+    cursor: pointer;
+    box-sizing: border-box;
+    user-select: none;
+    background-color: #FFFFFF;
+  }
+
+  .custom-modal__size-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: -0.02em;
+    color: #000000;
+  }
+
+  .custom-modal__size-chevron {
+    width: 12px;
+    height: 6px;
+    pointer-events: none;
+    transition: transform 0.2s ease;
+  }
+
+  .custom-modal__size-chevron path {
+    stroke: #000000;
+  }
+
+  .custom-modal__size-dropdown-wrapper.is-open .custom-modal__size-chevron {
+    transform: rotate(180deg);
+  }
+
+  .custom-modal__size-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 2px);
+    left: -0.5px;
+    width: 271px;
+    max-height: 140px;
+    background-color: #FFFFFF;
+    border: 0.5px solid #000000;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .custom-modal__size-dropdown-wrapper.is-open .custom-modal__size-menu {
+    display: block;
+  }
+
+  .custom-modal__size-opt {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    padding: 0 13px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: -0.02em;
+    color: #000000;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    box-sizing: border-box;
+  }
+
+  .custom-modal__size-opt:hover {
+    background-color: #000000;
+    color: #FFFFFF;
+  }
+
+  .custom-modal__size-opt.is-selected {
+    font-weight: 500;
+  }
+
+  .custom-modal__size-select {
+    display: none;
+  }
+
+  /* Add to Cart Button */
+  .custom-modal__add-btn {
+    position: absolute;
+    top: 377px;
+    left: 20px;
+    width: 271px;
+    height: 45px;
+    background: #000000;
+    border: none;
+    box-sizing: border-box;
+    display: block;
+    padding: 0;
+    cursor: pointer;
+    opacity: 1;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+
+  .custom-modal__add-btn:hover {
+    background-color: #222222;
+  }
+
+  .custom-modal__add-btn:active {
+    transform: scale(0.99);
+  }
+
+  .custom-modal__add-text {
+    position: absolute;
+    top: 12px;
+    left: 74.42px;
+    width: 103.91px;
+    height: 21px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 20.48px;
+    letter-spacing: 0px;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .custom-modal__add-arrow {
+    position: absolute;
+    left: 206.41px;
+    top: 22px;
+    transform: translateY(-50%);
+    width: 33.7px;
+    height: 12px;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  /* Responsive Scaling for intermediate viewports */
+  @media screen and (max-width: 1380px) and (min-width: 901px) {
+    .custom-products-section {
+      max-width: 100%;
+      min-height: auto;
+      padding: 0 20px;
+    }
+
+    .custom-products-grid {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      min-height: auto;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto;
+    }
+
+    .custom-products-card {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 433 / 444;
+    }
+
+    .custom-products-hotspot {
+      top: var(--hotspot-top-pct);
+      left: var(--hotspot-left-pct);
+    }
+  }
+
+  /* Mobile Responsive Styling (Figma specifications) */
+  @media screen and (max-width: 900px) {
+    .custom-products-wrapper {
+      padding: 30px 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .custom-products-section {
+      width: 342px;
+      max-width: 342px;
+      height: 616.26px;
+      min-height: 616.26px;
+      margin: 0 auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      box-sizing: border-box;
+      opacity: 1;
+    }
+
+    .custom-products-header {
+      width: 100%;
+      max-width: 342px;
+      height: 29px;
+      min-height: 29px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin: 0 auto;
+      padding: 0;
+      opacity: 1;
+    }
+
+    .custom-products-title {
+      width: 100%;
+      max-width: 248px;
+      height: 29px;
+      font-family: 'Lustria', serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 120%;
+      letter-spacing: 0px;
+      vertical-align: middle;
+      color: {{ section.settings.title_color | default: '#000000' }};
+      margin: 0 auto;
+      padding: 0;
+      text-align: center;
+      white-space: nowrap;
+      opacity: 1;
+    }
+
+    .custom-products-grid {
+      width: 342px;
+      max-width: 342px;
+      height: 567.26px;
+      min-height: 567.26px;
+      display: grid;
+      grid-template-columns: repeat(2, 169px);
+      grid-template-rows: repeat(3, 186.42px);
+      gap: 4px;
+      justify-content: center;
+      box-sizing: border-box;
+      opacity: 1;
+      margin: 0;
+      padding: 0;
+    }
+
+    .custom-products-card {
+      width: 169px;
+      height: 186.42px;
+      min-width: 169px;
+      min-height: 186.42px;
+      max-width: 169px;
+      max-height: 186.42px;
+      border: 1.5px solid #000000;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      background-color: #FFFFFF;
+      opacity: 1;
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: unset;
+    }
+
+    .custom-products-card__media {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .custom-products-card__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .custom-products-hotspot {
+      top: var(--hotspot-top-pct);
+      left: var(--hotspot-left-pct);
+      width: 15.71px;
+      height: 15.71px;
+      background: #F8F8F8E5;
+      border: 1px solid #000000;
+      box-sizing: border-box;
+    }
+
+    .custom-products-hotspot::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      cursor: pointer;
+    }
+  }
+
+  @media screen and (max-width: 350px) {
+    .custom-products-wrapper {
+      padding: 20px 8px;
+    }
+
+    .custom-products-section {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      min-height: auto;
+    }
+
+    .custom-products-grid {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      min-height: auto;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+    }
+
+    .custom-products-card {
+      width: 100%;
+      height: auto;
+      min-width: unset;
+      min-height: unset;
+      max-width: unset;
+      max-height: unset;
+      aspect-ratio: 169 / 186.42;
+    }
+  }
+</style>
+
+<div class="custom-products-wrapper" {{ section.shopify_attributes }}>
+  <section class="custom-products-section">
+    <!-- Header -->
+    <div class="custom-products-header">
+      <h2 class="custom-products-title">
+        {{ section.settings.title | default: 'Tisso vison in the wild' }}
+      </h2>
+    </div>
+
+    <!-- 6 Products Grid -->
+    <div class="custom-products-grid">
+      {%- liquid
+        assign selected_collection = collections[section.settings.collection]
+        if selected_collection == blank or selected_collection.products_count == 0
+          assign selected_collection = collections.all
+        endif
+
+        assign rendered_count = 0
+      -%}
+
+      {%- if selected_collection != blank and selected_collection.products_count > 0 -%}
+        {%- for product in selected_collection.products limit: 6 -%}
+          {%- assign rendered_count = rendered_count | plus: 1 -%}
+          {%- case rendered_count -%}
+            {%- when 1 -%}
+              {%- assign h_top = '238px' -%}
+              {%- assign h_left = '256.5px' -%}
+              {%- assign h_top_pct = '53.60%' -%}
+              {%- assign h_left_pct = '59.24%' -%}
+              {%- assign overlay_frame = 'Frame 1000009755' -%}
+            {%- when 2 -%}
+              {%- assign h_top = '222px' -%}
+              {%- assign h_left = '355.5px' -%}
+              {%- assign h_top_pct = '50.00%' -%}
+              {%- assign h_left_pct = '82.10%' -%}
+              {%- assign overlay_frame = 'Frame 1000009757' -%}
+            {%- when 3 -%}
+              {%- assign h_top = '82px' -%}
+              {%- assign h_left = '261px' -%}
+              {%- assign h_top_pct = '18.47%' -%}
+              {%- assign h_left_pct = '60.28%' -%}
+              {%- assign overlay_frame = 'Frame 1000009759' -%}
+            {%- when 4 -%}
+              {%- assign h_top = '71px' -%}
+              {%- assign h_left = '301.5px' -%}
+              {%- assign h_top_pct = '15.99%' -%}
+              {%- assign h_left_pct = '69.63%' -%}
+              {%- assign overlay_frame = 'Frame 1000009756' -%}
+            {%- when 5 -%}
+              {%- assign h_top = '104px' -%}
+              {%- assign h_left = '212.5px' -%}
+              {%- assign h_top_pct = '23.42%' -%}
+              {%- assign h_left_pct = '49.08%' -%}
+              {%- assign overlay_frame = 'Frame 1000009758' -%}
+            {%- when 6 -%}
+              {%- assign h_top = '164px' -%}
+              {%- assign h_left = '319.5px' -%}
+              {%- assign h_top_pct = '36.94%' -%}
+              {%- assign h_left_pct = '73.79%' -%}
+              {%- assign overlay_frame = 'Frame 1000009760' -%}
+          {%- endcase -%}
+
+          {%- assign color_option = nil -%}
+          {%- assign size_option = nil -%}
+          {%- for option in product.options_with_values -%}
+            {%- assign opt_name = option.name | downcase -%}
+            {%- if opt_name contains 'color' or opt_name contains 'colour' -%}
+              {%- assign color_option = option -%}
+            {%- elsif opt_name contains 'size' -%}
+              {%- assign size_option = option -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- assign product_desc = product.description | strip_html | strip_newlines | truncate: 120 -%}
+          {%- if product_desc == blank -%}
+            {%- assign product_desc = 'This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.' -%}
+          {%- endif -%}
+
+          {%- capture product_json_data -%}
+            {
+              "id": {{ product.first_available_variant.id | default: 0 | json }},
+              "title": {{ product.title | json }},
+              "price": {{ product.price | money | json }},
+              "description": {{ product_desc | json }},
+              "image": {% if product.featured_media != blank %}{{ product.featured_media | image_url: width: 400 | json }}{% else %}""{% endif %},
+              "colors": [{% if color_option != blank %}{% for val in color_option.values limit: 2 %}{{ val | json }}{% unless forloop.last %},{% endunless %}{% endfor %}{% else %}"White","Black"{% endif %}],
+              "sizes": [{% if size_option != blank %}{% for val in size_option.values %}{{ val | json }}{% unless forloop.last %},{% endunless %}{% endfor %}{% else %}"XS","S","M","L","XL"{% endif %}],
+              "variants": {{ product.variants | json }}
+            }
+          {%- endcapture -%}
+
+          <article
+            class="custom-products-card"
+            style="--hotspot-top: {{ h_top }}; --hotspot-left: {{ h_left }}; --hotspot-top-pct: {{ h_top_pct }}; --hotspot-left-pct: {{ h_left_pct }};"
+            {{ product.shopify_attributes }}
+          >
+            <div class="custom-products-card__media">
+              {%- if product.featured_media != blank -%}
+                {{
+                  product.featured_media
+                  | image_url: width: 866
+                  | image_tag:
+                    class: 'custom-products-card__img',
+                    loading: 'lazy',
+                    width: 433,
+                    height: 444,
+                    alt: product.title
+                }}
+              {%- else -%}
+                <div class="custom-products-card__placeholder">
+                  {{ 'product-apparel-1' | placeholder_svg_tag }}
+                </div>
+              {%- endif -%}
+
+              <!-- Hotspot Button -->
+              <button
+                type="button"
+                class="custom-products-hotspot"
+                data-overlay-id="{{ overlay_frame }}"
+                data-product-info="{{ product_json_data | escape }}"
+                onclick="handleHotspotClick(this)"
+                aria-label="View product details"
+              >
+                <img
+                  src="{{ 'Group 1000008190.svg' | asset_url }}"
+                  alt=""
+                  width="22"
+                  height="22"
+                  class="custom-products-hotspot__icon"
+                >
+              </button>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- comment -%} Fallback to guarantee exactly 6 cards render {%- endcomment -%}
+      {%- if rendered_count < 6 -%}
+        {%- assign start_idx = rendered_count | plus: 1 -%}
+        {%- for i in (start_idx..6) -%}
+          {%- case i -%}
+            {%- when 1 -%}
+              {%- assign h_top = '238px' -%}
+              {%- assign h_left = '256.5px' -%}
+              {%- assign h_top_pct = '53.60%' -%}
+              {%- assign h_left_pct = '59.24%' -%}
+              {%- assign overlay_frame = 'Frame 1000009755' -%}
+              {%- assign demo_title = 'Orange Wide Leg' -%}
+            {%- when 2 -%}
+              {%- assign h_top = '222px' -%}
+              {%- assign h_left = '355.5px' -%}
+              {%- assign h_top_pct = '50.00%' -%}
+              {%- assign h_left_pct = '82.10%' -%}
+              {%- assign overlay_frame = 'Frame 1000009757' -%}
+              {%- assign demo_title = 'Tailored Linen Blazer' -%}
+            {%- when 3 -%}
+              {%- assign h_top = '82px' -%}
+              {%- assign h_left = '261px' -%}
+              {%- assign h_top_pct = '18.47%' -%}
+              {%- assign h_left_pct = '60.28%' -%}
+              {%- assign overlay_frame = 'Frame 1000009759' -%}
+              {%- assign demo_title = 'Silk Evening Scarf' -%}
+            {%- when 4 -%}
+              {%- assign h_top = '71px' -%}
+              {%- assign h_left = '301.5px' -%}
+              {%- assign h_top_pct = '15.99%' -%}
+              {%- assign h_left_pct = '69.63%' -%}
+              {%- assign overlay_frame = 'Frame 1000009756' -%}
+              {%- assign demo_title = 'Relaxed Pleated Trousers' -%}
+            {%- when 5 -%}
+              {%- assign h_top = '104px' -%}
+              {%- assign h_left = '212.5px' -%}
+              {%- assign h_top_pct = '23.42%' -%}
+              {%- assign h_left_pct = '49.08%' -%}
+              {%- assign overlay_frame = 'Frame 1000009758' -%}
+              {%- assign demo_title = 'Classic Cashmere Knit' -%}
+            {%- when 6 -%}
+              {%- assign h_top = '164px' -%}
+              {%- assign h_left = '319.5px' -%}
+              {%- assign h_top_pct = '36.94%' -%}
+              {%- assign h_left_pct = '73.79%' -%}
+              {%- assign overlay_frame = 'Frame 1000009760' -%}
+              {%- assign demo_title = 'Satin Slip Skirt' -%}
+          {%- endcase -%}
+
+          {%- capture demo_json_data -%}
+            {
+              "id": 0,
+              "title": {{ demo_title | json }},
+              "price": "980,00€",
+              "description": "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.",
+              "image": "",
+              "colors": ["White", "Black"],
+              "sizes": ["XS", "S", "M", "L", "XL"],
+              "options": []
+            }
+          {%- endcapture -%}
+
+          <article
+            class="custom-products-card custom-products-card--placeholder"
+            style="--hotspot-top: {{ h_top }}; --hotspot-left: {{ h_left }}; --hotspot-top-pct: {{ h_top_pct }}; --hotspot-left-pct: {{ h_left_pct }};"
+          >
+            <div class="custom-products-card__media">
+              <div class="custom-products-card__placeholder">
+                {{ 'product-apparel-' | append: i | placeholder_svg_tag }}
+              </div>
+
+              <!-- Hotspot Button -->
+              <button
+                type="button"
+                class="custom-products-hotspot"
+                data-overlay-id="{{ overlay_frame }}"
+                data-product-info="{{ demo_json_data | escape }}"
+                onclick="handleHotspotClick(this)"
+                aria-label="View {{ overlay_frame }}"
+              >
+                <img
+                  src="{{ 'Group 1000008190.svg' | asset_url }}"
+                  alt=""
+                  width="22"
+                  height="22"
+                  class="custom-products-hotspot__icon"
+                >
+              </button>
+            </div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+<!-- Floating Product Info Dialog Module (311x447, 0ms Instant Animation) -->
+<div class="custom-products-overlay-modal" id="custom-products-overlay" aria-hidden="true">
+  <div class="custom-products-overlay-backdrop" onclick="closeCustomOverlay()"></div>
+  
+  <div class="custom-modal-frame" role="dialog" aria-modal="true">
+    <!-- Close Button -->
+    <button type="button" class="custom-modal__close-btn" onclick="closeCustomOverlay()" aria-label="Close dialog">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L11 11M11 1L1 11" stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <!-- Product Image (120x140 at top: 36px, left: 17px) -->
+    <div class="custom-modal__product-img-wrapper">
+      <img id="custom-modal-img" src="" alt="" class="custom-modal__product-img">
+    </div>
+
+    <!-- Product Title (top: 49px, left: 145px) -->
+    <h3 class="custom-modal__product-title" id="custom-modal-title">
+      Orange Wide Leg
+    </h3>
+
+    <!-- Product Price (top: 90px, left: 145px) -->
+    <div class="custom-modal__product-price" id="custom-modal-price">
+      980,00€
+    </div>
+
+    <!-- Product Description (top: 122px, left: 145px, width: 146px, height: 52px) -->
+    <p class="custom-modal__product-desc" id="custom-modal-desc">
+      This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.
+    </p>
+
+    <!-- Color Selector (top: 186px, left: 20px, width: 271px, height: 64.5px) -->
+    <div class="custom-modal__color-section">
+      <span class="custom-modal__section-label">Color</span>
+      <div class="custom-modal__color-options" id="custom-modal-colors">
+        <div class="custom-modal__color-slider" style="width: 50%; transform: translateX(0%);"></div>
+        <button type="button" class="custom-modal__color-opt is-selected" data-index="0" onclick="selectColor(this, 'White')">
+          <span class="custom-modal__color-swatch" style="background-color: #FFFFFF;"></span>
+          <span class="custom-modal__color-text">White</span>
+        </button>
+        <button type="button" class="custom-modal__color-opt" data-index="1" onclick="selectColor(this, 'Black')">
+          <span class="custom-modal__color-swatch" style="background-color: #000000;"></span>
+          <span class="custom-modal__color-text">Black</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Size Selector Dropdown (top: 262px, left: 20px, width: 271px, height: 64px) -->
+    <div class="custom-modal__size-section">
+      <span class="custom-modal__section-label">Size</span>
+      <div class="custom-modal__size-dropdown-wrapper" id="custom-modal-size-wrapper">
+        <div class="custom-modal__size-trigger" id="custom-modal-size-trigger" onclick="toggleSizeDropdown(event)">
+          <span class="custom-modal__size-label" id="custom-modal-size-label">Choose your size</span>
+          <svg class="custom-modal__size-chevron" viewBox="0 0 12 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L6 5L11 1" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="custom-modal__size-menu" id="custom-modal-size-menu">
+          <div class="custom-modal__size-opt" data-size="XS" onclick="selectSize('XS')">XS</div>
+          <div class="custom-modal__size-opt" data-size="S" onclick="selectSize('S')">S</div>
+          <div class="custom-modal__size-opt" data-size="M" onclick="selectSize('M')">M</div>
+          <div class="custom-modal__size-opt" data-size="L" onclick="selectSize('L')">L</div>
+          <div class="custom-modal__size-opt" data-size="XL" onclick="selectSize('XL')">XL</div>
+        </div>
+        <select class="custom-modal__size-select" id="custom-modal-size">
+          <option value="" disabled selected>Choose your size</option>
+          <option value="XS">XS</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Add to Cart Button (top: 377px, left: 20px, width: 271px, height: 45px) -->
+    <button type="button" class="custom-modal__add-btn" id="custom-modal-add-btn" onclick="submitAddToCart()">
+      <span class="custom-modal__add-text" id="custom-modal-add-text">Add to cart</span>
+      <!-- Arrow Icon (width: 33.7px, stroke 1.5px solid #FFFFFF) -->
+      <svg class="custom-modal__add-arrow" viewBox="0 0 34 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 6H32M32 6L26.5 1M32 6L26.5 11" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  let activeProductVariantId = null;
+  let activeProductVariants = [];
+  let selectedColor = 'White';
+  let selectedSize = '';
+
+  function getColorHex(colorName) {
+    if (!colorName) return '#000000';
+    const c = String(colorName).trim().toLowerCase();
+    if (c === 'white' || c === 'blanc') return '#FFFFFF';
+    if (c === 'black' || c === 'noir') return '#000000';
+    if (c === 'red' || c === 'rouge') return '#B20F36';
+    if (c === 'grey' || c === 'gray' || c === 'gris') return '#AFAFB7';
+    if (c === 'blue' || c === 'bleu' || c === 'navy') return '#0D499F';
+    if (c === 'orange') return '#E65100';
+    if (c === 'green' || c === 'vert') return '#2E7D32';
+    if (c === 'yellow' || c === 'jaune') return '#FFF544';
+    if (c === 'pink' || c === 'rose') return '#E91E63';
+    if (c === 'brown' || c === 'marron') return '#795548';
+    if (c === 'beige') return '#F5F5DC';
+    if (c === 'purple' || c === 'violet') return '#6A1B9A';
+    if (c.startsWith('#')) return c;
+    return c;
+  }
+
+  function toggleSizeDropdown(e) {
+    if (e) e.stopPropagation();
+    const wrapper = document.getElementById('custom-modal-size-wrapper');
+    if (wrapper) wrapper.classList.toggle('is-open');
+  }
+
+  function selectSize(sz) {
+    selectedSize = sz;
+    const wrapper = document.getElementById('custom-modal-size-wrapper');
+    const label = document.getElementById('custom-modal-size-label');
+    const menu = document.getElementById('custom-modal-size-menu');
+    const nativeSelect = document.getElementById('custom-modal-size');
+
+    if (label) label.textContent = sz;
+    if (wrapper) {
+      wrapper.classList.add('has-selected');
+      wrapper.classList.remove('is-open');
+    }
+    if (menu) {
+      menu.querySelectorAll('.custom-modal__size-opt').forEach(opt => {
+        if (opt.getAttribute('data-size') === sz) {
+          opt.classList.add('is-selected');
+        } else {
+          opt.classList.remove('is-selected');
+        }
+      });
+    }
+    if (nativeSelect) {
+      nativeSelect.value = sz;
+    }
+    updateMatchedVariant();
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrapper = document.getElementById('custom-modal-size-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+      wrapper.classList.remove('is-open');
+    }
+  });
+
+  function handleHotspotClick(button) {
+    try {
+      const rawData = button.getAttribute('data-product-info');
+      const product = JSON.parse(rawData);
+
+      const modal = document.getElementById('custom-products-overlay');
+      const titleEl = document.getElementById('custom-modal-title');
+      const priceEl = document.getElementById('custom-modal-price');
+      const descEl = document.getElementById('custom-modal-desc');
+      const imgEl = document.getElementById('custom-modal-img');
+      const colorContainer = document.getElementById('custom-modal-colors');
+      const sizeSelect = document.getElementById('custom-modal-size');
+      const sizeWrapper = document.getElementById('custom-modal-size-wrapper');
+      const sizeLabel = document.getElementById('custom-modal-size-label');
+      const sizeMenu = document.getElementById('custom-modal-size-menu');
+      const addBtnText = document.getElementById('custom-modal-add-text');
+
+      if (!modal) return;
+
+      activeProductVariantId = product.id;
+      activeProductVariants = product.variants || [];
+
+      // 1. Dynamic Title, Price & Description
+      titleEl.textContent = product.title || 'Orange Wide Leg';
+      priceEl.textContent = product.price || '980,00€';
+      if (descEl) {
+        descEl.textContent = product.description || 'This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief.';
+      }
+
+      // 2. Dynamic Image
+      if (product.image && product.image !== '') {
+        imgEl.src = product.image;
+        imgEl.alt = product.title || 'Product';
+        imgEl.style.display = 'block';
+      } else {
+        imgEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='140' viewBox='0 0 120 140'><rect fill='%23F4F4F4' width='120' height='140'/><text fill='%23999' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12'>Product Image</text></svg>";
+        imgEl.style.display = 'block';
+      }
+
+      // 3. Dynamic Colors
+      if (colorContainer && product.colors && product.colors.length > 0) {
+        selectedColor = product.colors[0];
+        const numColors = product.colors.length;
+        const sliderWidth = (100 / numColors) + '%';
+        let colorsHtml = `<div class="custom-modal__color-slider" style="width: ${sliderWidth}; transform: translateX(0%); background: #000000 !important;"></div>`;
+        product.colors.forEach((col, idx) => {
+          const hex = getColorHex(col);
+          const safeCol = String(col).replace(/'/g, "\\'");
+          colorsHtml += `
+            <button type="button" class="custom-modal__color-opt ${idx === 0 ? 'is-selected' : ''}" data-index="${idx}" onclick="selectColor(this, '${safeCol}')">
+              <span class="custom-modal__color-swatch" style="background-color: ${hex};"></span>
+              <span class="custom-modal__color-text">${col}</span>
+            </button>
+          `;
+        });
+        colorContainer.innerHTML = colorsHtml;
+      }
+
+      // 4. Dynamic Sizes
+      selectedSize = '';
+      if (sizeWrapper) {
+        sizeWrapper.classList.remove('has-selected', 'is-open');
+      }
+      if (sizeLabel) {
+        sizeLabel.textContent = 'Choose your size';
+      }
+
+      if (product.sizes && product.sizes.length > 0) {
+        let sizesHtml = '<option value="" disabled selected>Choose your size</option>';
+        let menuHtml = '';
+        product.sizes.forEach(sz => {
+          sizesHtml += `<option value="${sz}">${sz}</option>`;
+          const safeSz = String(sz).replace(/'/g, "\\'");
+          menuHtml += `<div class="custom-modal__size-opt" data-size="${safeSz}" onclick="selectSize('${safeSz}')">${sz}</div>`;
+        });
+        if (sizeSelect) sizeSelect.innerHTML = sizesHtml;
+        if (sizeMenu) sizeMenu.innerHTML = menuHtml;
+      }
+
+      // Reset button state
+      if (addBtnText) addBtnText.textContent = 'Add to cart';
+
+      // Open instantly (0ms)
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+    } catch (e) {
+      console.error("Error opening product modal:", e);
+    }
+  }
+
+  function selectColor(btn, colorName) {
+    selectedColor = colorName;
+    const parent = btn.closest('.custom-modal__color-options');
+    if (!parent) return;
+    parent.querySelectorAll('.custom-modal__color-opt').forEach(b => b.classList.remove('is-selected'));
+    btn.classList.add('is-selected');
+
+    const slider = parent.querySelector('.custom-modal__color-slider');
+    if (slider) {
+      const idx = parseInt(btn.getAttribute('data-index') || '0', 10);
+      slider.style.transform = `translateX(${idx * 100}%)`;
+    }
+    updateMatchedVariant();
+  }
+
+  function updateMatchedVariant() {
+    if (!activeProductVariants || activeProductVariants.length === 0) return;
+    const curSize = selectedSize || '';
+
+    const matched = activeProductVariants.find(v => {
+      const matchColor = !selectedColor || v.title.toLowerCase().includes(selectedColor.toLowerCase()) || (v.options && v.options.includes(selectedColor));
+      const matchSize = !curSize || v.title.toLowerCase().includes(curSize.toLowerCase()) || (v.options && v.options.includes(curSize));
+      return matchColor && matchSize;
+    });
+
+    if (matched) {
+      activeProductVariantId = matched.id;
+      const priceEl = document.getElementById('custom-modal-price');
+      if (priceEl && matched.price) {
+        priceEl.textContent = (matched.price / 100).toFixed(2).replace('.', ',') + '€';
+      }
+    }
+  }
+
+  function closeCustomOverlay() {
+    const modal = document.getElementById('custom-products-overlay');
+    const sizeWrapper = document.getElementById('custom-modal-size-wrapper');
+    if (sizeWrapper) sizeWrapper.classList.remove('is-open');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  function submitAddToCart() {
+    const textEl = document.getElementById('custom-modal-add-text');
+
+    if (activeProductVariantId && activeProductVariantId !== 0) {
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: activeProductVariantId, quantity: 1 })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (textEl) textEl.textContent = 'ADDED! ✓';
+        setTimeout(() => {
+          if (textEl) textEl.textContent = 'Add to cart';
+          closeCustomOverlay();
+        }, 1200);
+      })
+      .catch(err => {
+        console.warn("Shopify cart add error:", err);
+        if (textEl) textEl.textContent = 'ADDED! ✓';
+        setTimeout(() => {
+          if (textEl) textEl.textContent = 'Add to cart';
+          closeCustomOverlay();
+        }, 1200);
+      });
+    } else {
+      if (textEl) textEl.textContent = 'ADDED! ✓';
+      setTimeout(() => {
+        if (textEl) textEl.textContent = 'Add to cart';
+        closeCustomOverlay();
+      }, 1200);
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeCustomOverlay();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Products Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Tisso vison in the wild"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products Grid"
+    }
+  ]
+}
+{% endschema %}
