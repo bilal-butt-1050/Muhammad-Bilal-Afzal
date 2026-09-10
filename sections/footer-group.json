@@ -13,6 +13,7 @@
   "sections": {
     "footer_m9NzUG": {
       "type": "footer",
+      "disabled": true,
       "blocks": {
         "group_H6VpwJ": {
           "type": "group",
@@ -145,6 +146,7 @@
     },
     "footer_utilities_jLGE8U": {
       "type": "footer-utilities",
+      "disabled": true,
       "blocks": {
         "footer_copyright_jweRK8": {
           "type": "footer-copyright",
